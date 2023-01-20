@@ -28,7 +28,7 @@ namespace API.Controllers
         {
             var activityToReturn = await _context.Activities.FirstOrDefaultAsync(a => a.Id == Id);
             
-            if(activityToReturn==null)
+             if(activityToReturn==null)
                 return NotFound();
 
             return Ok(activityToReturn);
