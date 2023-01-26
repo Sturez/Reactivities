@@ -13,6 +13,7 @@ function App() {
   const [selectedActivity, setSelectedActivity] = useState<Activity | undefined>(undefined);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   useEffect(() => {
     agent.Activities.list().then(response => {
@@ -43,26 +44,35 @@ function App() {
     setEditMode(false);
   }
 
-  function handleCreateOrEditActivity(activity: Activity) {
+  async function handleCreateOrEditActivity(activity: Activity) {
 
-    //this does the same, but everything is compressed to one line.... beautiful, but it can mess up in greater contexts
-    // activity.id
-    // ? setActivities([...activities.filter(a => a.id !== activity.id), activity])
-    // : setActivities([...activities, {...activity,id:uuid()}]);
+    /* this does the same, but everything is compressed to one line.... beautiful, but it can mess up in greater contexts
+     
+    activity.id
+       ? setActivities([...activities.filter(a => a.id !== activity.id), activity])
+     : setActivities([...activities, {...activity,id:uuid()}]);
+    */
+    setSubmitting(true);
 
     if (activity.id) {
+      await agent.Activities.update(activity);
       setActivities([...activities.filter(a => a.id !== activity.id), activity]);
     } else {
       activity.id = uuid();
+      await agent.Activities.create(activity);
       setActivities([...activities, activity]);
     }
 
     setEditMode(false);
     setSelectedActivity(activity);
+    setSubmitting(false);
   }
 
-  function handleDeleteActivity(id: string) {
+  async function handleDeleteActivity(id: string) {
+    setSubmitting(true);
+    await agent.Activities.delete(id);
     setActivities([...activities.filter(a => a.id !== id)]);
+    setSubmitting(false);
   }
 
   function handleLoading(isLoading: boolean) {
@@ -85,7 +95,8 @@ function App() {
           openForm={handleFormOpen}
           closeForm={handleFormClose}
           createOrEdit={handleCreateOrEditActivity}
-          deleteActivity={handleDeleteActivity} />
+          deleteActivity={handleDeleteActivity}
+          submitting={submitting} />
       </Container>
     </Fragment>
   );
