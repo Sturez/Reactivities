@@ -19,6 +19,24 @@ export default class ActivityStore {
         this.loadingInitial = state;
     }
 
+    selectActivity = (id: string) => {
+        this.selectedActivity = this.activities.find(a => a.id === id);
+    }
+
+    clearSelectedActivity = () => {
+        this.selectedActivity = undefined;
+    }
+
+    openForm = (id?: string) => {
+        id ? this.selectActivity(id) : this.clearSelectedActivity();
+        this.editMode = true;
+    }
+    closeForm = () => {
+        this.editMode = false;
+    }
+
+    //#region CRUD operations
+
     loadingActivities = async () => {
         this.setLoadingInitial(true);
 
@@ -37,23 +55,6 @@ export default class ActivityStore {
             this.setLoadingInitial(false);
         }
 
-    }
-
-
-    selectActivity = (id: string) => {
-        this.selectedActivity = this.activities.find(a => a.id === id);
-    }
-
-    clearSelectedActivity = () => {
-        this.selectedActivity = undefined;
-    }
-
-    openForm = (id?: string) => {
-        id ? this.selectActivity(id) : this.clearSelectedActivity();
-        this.editMode = true;
-    }
-    closeForm = () => {
-        this.editMode = false;
     }
 
     createActivity = async (activity: Activity) => {
@@ -92,4 +93,23 @@ export default class ActivityStore {
         }
     }
 
+    deleteActivity = async (id: string) => {
+        try {
+            this.loading = true;
+            await agent.Activities.delete(id);
+            runInAction(() => {
+                this.activities = [...this.activities.filter(a => a.id !== id)];
+                if (this.selectedActivity?.id === id)
+                    this.clearSelectedActivity();
+                this.loading = false;
+            });
+        } catch (error) {
+            console.error(error);
+            runInAction(() => {
+                this.loading = false;
+            });
+        }
+    }
+
+    //#endregion
 }
