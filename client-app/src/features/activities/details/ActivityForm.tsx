@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { ChangeEvent, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Form, InputOnChangeData, Segment, TextAreaProps } from "semantic-ui-react";
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { Activity } from "../../../app/models/activity";
@@ -38,14 +38,10 @@ export default observer(function ActivityForm() {
         console.log(activity);
         if (!activity.id) {
             activity.id = uuid();
-            createActivity(activity).then(a => {
-                navigate(`/activities/${activity.id}`);
-            });
+            createActivity(activity).then(() => navigate(`/activities/${activity.id}`));
         }
         else {
-            updateActivity(activity).then(a => {
-                navigate(`/activities/${activity.id}`);
-            });
+            updateActivity(activity).then(() => navigate(`/activities/${activity.id}`));
         }
     }
 
@@ -69,7 +65,7 @@ export default observer(function ActivityForm() {
                 <Form.Input placeholder='Venue' value={activity.venue} name='venue' onChange={handleInputChange} />
 
                 <Button floated="right" positive type="submit" content="Submit" loading={loading} />
-                <Button floated="right" type="button" content="Cancel" />
+                <Button as={Link} to="/activities" floated="right" type="button" content="Cancel" />
             </Form>
 
         </Segment>
