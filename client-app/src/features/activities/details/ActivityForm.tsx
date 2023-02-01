@@ -1,26 +1,37 @@
 import { observer } from "mobx-react-lite";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Button, Form, InputOnChangeData, Segment, TextAreaProps } from "semantic-ui-react";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 import { Activity } from "../../../app/models/activity";
 import { useStore } from "../../../app/store/store";
 
 export default observer(function ActivityForm() {
 
     const { activityStore } = useStore();
-    const { selectedActivity, closeForm, createActivity, updateActivity, loading } = activityStore;
+    const { createActivity, updateActivity, loading,
+        loadingInitial, loadActivity } = activityStore;
+    const { id } = useParams();
 
-    const initialState: Activity = selectedActivity ?? {
+    const [activity, setActivity] = useState<Activity>({
         id: '',
         title: '',
         category: '',
         description: '',
         date: '',
         city: '',
-        venue: '',
-    }
+        venue: ''
+    });
 
-    const [activity, setActivity] = useState<Activity>(initialState);
 
+    useEffect(() => {
+        if (id) {
+            loadActivity(id).then(activity => setActivity(activity!));
+        }
+
+    }, [id, loadActivity]);
+
+    
     function handleSubmit() {
         console.log(activity);
         activity.id ? updateActivity(activity) : createActivity(activity);
@@ -30,6 +41,10 @@ export default observer(function ActivityForm() {
     function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, data: InputOnChangeData | TextAreaProps) {
         const { name, value } = event.target;
         setActivity({ ...activity, [name]: value });
+    }
+    
+    if (loadingInitial) {
+        return (<LoadingComponent content="Loading activity...." />);
     }
 
     return (
@@ -43,7 +58,7 @@ export default observer(function ActivityForm() {
                 <Form.Input placeholder='Venue' value={activity.venue} name='venue' onChange={handleInputChange} />
 
                 <Button floated="right" positive type="submit" content="Submit" loading={loading} />
-                <Button floated="right" type="button" content="Cancel" onClick={closeForm} />
+                <Button floated="right" type="button" content="Cancel" />
             </Form>
 
         </Segment>
