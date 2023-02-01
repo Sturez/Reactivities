@@ -6,7 +6,7 @@ export default function ActivityDetails() {
     const { activityStore } = useStore();
     const { selectedActivity: activity, openForm, clearSelectedActivity } = activityStore;
 
-    if (!activity) return (<></>);
+    if (!activity) return (<div></div>);
 
     return (
 
@@ -22,6 +22,7 @@ export default function ActivityDetails() {
                 </Card.Description>
             </Card.Content>
             <Card.Content extra>
+
                 <ButtonGroup widths={2}>
                     <Button basic color="blue" content="Edit" onClick={() => openForm(activity.id)} />
                     <Button basic color="grey" content="Cancel" onClick={clearSelectedActivity} />
