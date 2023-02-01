@@ -5,7 +5,6 @@ import { Container } from 'semantic-ui-react';
 import LoadingComponent from './LoadingComponent';
 import { useStore } from '../store/store';
 import { observer } from 'mobx-react-lite';
-import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
 
 function App() {
   const { activityStore } = useStore();
