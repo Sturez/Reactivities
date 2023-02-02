@@ -14,23 +14,22 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Activity>>> GetActivities()
         {
-            var activitiesToReturn = await Mediator.Send(new List.Query());
-            return Ok(activitiesToReturn);
+            return HandleResult<IEnumerable<Activity>>(await Mediator.Send(new List.Query()));
         }
 
         [HttpGet("{Id}", Name = "GetActivity")]
         public async Task<ActionResult<Activity>> GetActivity(Guid Id)
         {
-            var activityToReturn = await Mediator.Send(new Details.Query { Id = Id });
-            return Ok(activityToReturn);
+            return HandleResult<Activity>(await Mediator.Send(new Details.Query { Id = Id }));
         }
 
         [HttpPost]
         public async Task<IActionResult> SetActivity(Activity activity)
         {
-            await Mediator.Send(new Create.Command { Activity = activity });
+            return HandleResult(await Mediator.Send(new Create.Command { Activity = activity }));
 
-            return CreatedAtRoute("GetActivity", new { Id = activity.Id }, activity);
+            // this should be returned, not the Ok() 
+            //return CreatedAtRoute("GetActivity", new { Id = activity.Id }, activity);
         }
 
         [HttpPut("{id}")]

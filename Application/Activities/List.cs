@@ -2,14 +2,15 @@ using MediatR;
 using Domain;
 using Persistence;
 using Microsoft.EntityFrameworkCore;
+using Application.Core;
 
 namespace Application.Activities
 {
     public class List
     {
-        public class Query : IRequest<IEnumerable<Activity>> { }
+        public class Query : IRequest<Result<IEnumerable<Activity>>> { }
 
-        public class Handler : IRequestHandler<Query, IEnumerable<Activity>>
+        public class Handler : IRequestHandler<Query, Result<IEnumerable<Activity>>>
         {
             private readonly DataContext _context;
 
@@ -18,9 +19,9 @@ namespace Application.Activities
                 this._context = context ?? throw new ArgumentNullException(nameof(context));
             }
 
-            public async Task<IEnumerable<Activity>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<IEnumerable<Activity>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _context.Activities.ToListAsync();
+                return Result<IEnumerable<Activity>>.Success(await _context.Activities.ToListAsync());
             }
         }
     }
