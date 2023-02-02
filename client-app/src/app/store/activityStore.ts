@@ -19,6 +19,38 @@ export default class ActivityStore {
             .sort((a, b) => Date.parse(a.date) - Date.parse(b.date));
     }
 
+    
+    get groupedActivities() {
+      //#region  explanation
+
+        /* creates an object like 
+        {
+         date: 2023-11-11
+         avtivities: [
+            activity1,
+            activity2
+         ]
+        }
+         */
+      //#endregion
+
+        return Object.entries(
+            this.activitiesByDate.reduce(
+                (activities, activity) => {
+                    const date = activity.date;
+                    //#region explanation
+                    // check if exists an entry with key date, 
+                    // if it does exists it adds the new activity to the array
+                    // else creates a new activities array and assigns it to it
+                    //#endregion
+                    activities[date] = activities[date] ? [...activities[date], activity] : [activity];
+                    return activities;
+                }
+                , {} as { [key: string]: Activity[] }));
+
+    }
+
+
     setLoadingInitial = (state: boolean) => {
         this.loadingInitial = state;
     }
