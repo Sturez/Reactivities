@@ -6,6 +6,7 @@ import LoadingComponent from './LoadingComponent';
 import { useStore } from '../store/store';
 import { observer } from 'mobx-react-lite';
 import HomePage from '../../features/home/HomePage';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const { activityStore } = useStore();
@@ -21,6 +22,7 @@ function App() {
 
   return (
     <>
+      <ToastContainer position='bottom-right' hideProgressBar theme='colored' />
       {
         location.pathname === '/' ? <HomePage /> :
           (
