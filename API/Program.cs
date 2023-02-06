@@ -30,6 +30,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("ReactApp_CorsPolicy");
 
+app.UseAuthentication();
+// authentication always come from authorization!!
 app.UseAuthorization();
 
 app.MapControllers();
