@@ -1,3 +1,4 @@
+using API.Services;
 using Domain;
 using Persistence;
 
@@ -8,12 +9,15 @@ namespace API.Extensions
         public static IServiceCollection AddIdentityServices(this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddIdentityCore<AppUser>(opt=>{
+            services.AddIdentityCore<AppUser>(opt =>
+            {
                 opt.Password.RequireNonAlphanumeric = false;
             })
             .AddEntityFrameworkStores<DataContext>();
 
-            services.AddAuthentication();            
+            services.AddAuthentication();
+
+            services.AddScoped<TokenService>();
 
             return services;
         }
