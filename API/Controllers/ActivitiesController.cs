@@ -1,9 +1,11 @@
 using Domain;
 using Application.Activities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
+    [AllowAnonymous]
     [ApiController]
     [Route("api/activities")]
     public class ActivitiesController : BaseApiController

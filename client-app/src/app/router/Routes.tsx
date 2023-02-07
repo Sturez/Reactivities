@@ -6,6 +6,7 @@ import ActivityForm from "../../features/activities/details/ActivityForm";
 import NotFound from "../../features/errors/NotFound";
 import ServerError from "../../features/errors/ServerError";
 import TestErrors from "../../features/errors/TestError";
+import LoginForm from "../../features/users/LoginForm";
 import App from "../layout/App";
 
 export const routes: RouteObject[] = [
@@ -17,11 +18,12 @@ export const routes: RouteObject[] = [
             { path: 'activities', element: <ActivityDashboard /> },
             { path: 'activities/:id', element: <ActivityDetails /> },
             { path: 'createActivity', element: <ActivityForm key='create' /> },
-            { path: 'manage/:id', element: <ActivityForm key='manage'/> },
-            { path: 'errors', element: <TestErrors key='errors'/> },
-            { path: 'not-found', element: <NotFound key='not-found'/> },
-            { path: 'server-error', element: <ServerError  key='server-error'/> },
-            { path: '*', element: <Navigate replace to="/not-found"/> },
+            { path: 'manage/:id', element: <ActivityForm key='manage' /> },
+            { path: 'login', element: <LoginForm key='login' /> },
+            { path: 'errors', element: <TestErrors key='errors' /> },
+            { path: 'not-found', element: <NotFound key='not-found' /> },
+            { path: 'server-error', element: <ServerError key='server-error' /> },
+            { path: '*', element: <Navigate replace to="/not-found" /> },
         ]
     }
 ];
