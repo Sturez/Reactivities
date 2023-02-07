@@ -1,10 +1,12 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { User, UserFormValues } from "../models/user";
+import { router } from "../router/Routes";
+import { store } from "./store";
 
 export default class UserStore {
 
-    user?: User = undefined;
+    user: User | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -25,12 +27,20 @@ export default class UserStore {
     login = async (formValues: UserFormValues) => {
         try {
             const user = await agent.Account.login(formValues);
-            console.log(user);
-            return user;
+            store.commonStore.setToken(user.token);
+            runInAction(() => this.user = user);
+            router.navigate('/activities')
+
         } catch (error) {
             throw error;
         }
+    }
 
+    logout = () => {
+        store.commonStore.setToken(null);
+        localStorage.removeItem('jwt');
+        this.user = null;
+        router.navigate('/');
     }
 
     register = async (formValues: UserFormValues) => {
