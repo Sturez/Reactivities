@@ -2,9 +2,10 @@ import { observer } from "mobx-react-lite";
 import { Link } from "react-router-dom";
 import { Container, Header, Segment, Image, Button } from "semantic-ui-react";
 import { useStore } from "../../app/store/store";
+import LoginForm from "../users/LoginForm";
 
 export default observer(function HomePage() {
-    const { userStore:{isLoggedIn} } = useStore();
+    const { userStore: { isLoggedIn }, modalStore: { openModal } } = useStore();
 
     return (
         <Segment inverted textAlign="center" vertical className="masthead" >
@@ -23,8 +24,15 @@ export default observer(function HomePage() {
                             </>
                         ) : (
                             <>
-                                <Button as={Link} to='/login' size="huge" inverted>
+                                <Button size="huge" inverted
+                                    onClick={() => openModal(<LoginForm />)}>
+
                                     Login
+                                </Button>
+                                <Button size="huge" inverted
+                                    onClick={() => openModal(<h1>Register</h1>)}>
+
+                                    Register
                                 </Button>
                             </>
                         )}
