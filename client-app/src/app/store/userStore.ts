@@ -16,9 +16,10 @@ export default class UserStore {
         return !!this.user;
     }
 
-    current = async () => {
+    getUser = async () => {
         try {
-            this.user = await agent.Account.current();
+            const user = await agent.Account.current();
+            runInAction(() => { this.user = user });
         } catch (error) {
             throw error;
         }
@@ -38,7 +39,6 @@ export default class UserStore {
 
     logout = () => {
         store.commonStore.setToken(null);
-        localStorage.removeItem('jwt');
         this.user = null;
         router.navigate('/');
     }
