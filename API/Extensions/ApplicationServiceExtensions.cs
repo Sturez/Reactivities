@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 using FluentValidation.AspNetCore;
 using FluentValidation;
+using Application.Interfaces;
+using Infrastructure.Security;
 
 namespace API.Extensions
 {
@@ -14,12 +16,10 @@ namespace API.Extensions
         {
             // using AppDomain.CurrentDomain.GetAssemblies() allow the app to get automatically all the assemblies 
             Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
-
             Services.AddDbContext<DataContext>(opt =>
             {
                 opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
-
 
             Services.AddCors(opt =>
             {
@@ -35,6 +35,9 @@ namespace API.Extensions
             
             Services.AddFluentValidationAutoValidation();
             Services.AddValidatorsFromAssemblyContaining<Create>();
+
+            Services.AddHttpContextAccessor();
+            Services.AddScoped<IUserAccessor, UserAccessor>();
             
             return Services;
 
