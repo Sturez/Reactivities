@@ -10,9 +10,9 @@ namespace API.Controllers
     {
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Activity>>> GetActivities()
+        public async Task<ActionResult<IEnumerable<ActivityDto>>> GetActivities()
         {
-            return HandleResult<IEnumerable<Activity>>(await Mediator.Send(new List.Query()));
+            return HandleResult<IEnumerable<ActivityDto>>(await Mediator.Send(new List.Query()));
         }
 
         [HttpGet("{Id}", Name = "GetActivity")]
