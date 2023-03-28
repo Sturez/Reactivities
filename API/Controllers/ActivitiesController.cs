@@ -1,6 +1,7 @@
 using Domain;
 using Application.Activities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
@@ -30,6 +31,7 @@ namespace API.Controllers
             //return CreatedAtRoute("GetActivity", new { Id = activity.Id }, activity);
         }
 
+        [Authorize(Policy = "IsActivityHost")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateActivity(Guid id, Activity activity)
         {
@@ -39,6 +41,7 @@ namespace API.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "IsActivityHost")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteActivity(Guid id)
         {
