@@ -1,7 +1,9 @@
 using System.Text;
 using API.Services;
 using Domain;
+using Infrastructure.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Persistence;
 
@@ -16,10 +18,11 @@ namespace API.Extensions
             {
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.User.RequireUniqueEmail = true;
-                
+
             })
             .AddEntityFrameworkStores<DataContext>();
 
+            // setting up JWT token authentication
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["TokenKey"]));
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -33,6 +36,18 @@ namespace API.Extensions
                     ValidateAudience = false
                 };
             });
+
+            // adding IsHostRequirement Authorization.
+            // This service will identify if a user is the host of an event
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("IsActivityHost", policy =>
+                {
+                    policy.Requirements.Add(new IsHostRequirement());
+                });
+            });
+            // we need this to last as long as the method is running
+            services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
 
             services.AddScoped<TokenService>();
 

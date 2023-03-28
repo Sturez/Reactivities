@@ -3,25 +3,33 @@ using Domain;
 using Persistence;
 using Microsoft.EntityFrameworkCore;
 using Application.Core;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace Application.Activities
 {
     public class List
     {
-        public class Query : IRequest<Result<IEnumerable<Activity>>> { }
+        public class Query : IRequest<Result<IEnumerable<ActivityDto>>> { }
 
-        public class Handler : IRequestHandler<Query, Result<IEnumerable<Activity>>>
+        public class Handler : IRequestHandler<Query, Result<IEnumerable<ActivityDto>>>
         {
             private readonly DataContext _context;
+            private readonly IMapper _mapper;
 
-            public Handler(DataContext context)
+            public Handler(DataContext context, IMapper mapper)
             {
                 this._context = context ?? throw new ArgumentNullException(nameof(context));
+                this._mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             }
 
-            public async Task<Result<IEnumerable<Activity>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<IEnumerable<ActivityDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return Result<IEnumerable<Activity>>.Success(await _context.Activities.ToListAsync());
+                var activities = await _context.Activities
+                .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+                return Result<IEnumerable<ActivityDto>>.Success(activities);
             }
         }
     }

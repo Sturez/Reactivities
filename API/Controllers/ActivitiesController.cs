@@ -5,22 +5,21 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers
 {
-    [AllowAnonymous]
     [ApiController]
     [Route("api/activities")]
     public class ActivitiesController : BaseApiController
     {
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Activity>>> GetActivities()
+        public async Task<ActionResult<IEnumerable<ActivityDto>>> GetActivities()
         {
-            return HandleResult<IEnumerable<Activity>>(await Mediator.Send(new List.Query()));
+            return HandleResult<IEnumerable<ActivityDto>>(await Mediator.Send(new List.Query()));
         }
 
         [HttpGet("{Id}", Name = "GetActivity")]
-        public async Task<ActionResult<Activity>> GetActivity(Guid Id)
+        public async Task<ActionResult<ActivityDto>> GetActivity(Guid Id)
         {
-            return HandleResult<Activity>(await Mediator.Send(new Details.Query { Id = Id }));
+            return HandleResult<ActivityDto>(await Mediator.Send(new Details.Query { Id = Id }));
         }
 
         [HttpPost]
@@ -32,6 +31,7 @@ namespace API.Controllers
             //return CreatedAtRoute("GetActivity", new { Id = activity.Id }, activity);
         }
 
+        [Authorize(Policy = "IsActivityHost")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateActivity(Guid id, Activity activity)
         {
@@ -41,10 +41,17 @@ namespace API.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "IsActivityHost")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteActivity(Guid id)
         {
             return HandleResult(await Mediator.Send(new Delete.Command { Id = id }));
+        }
+
+        [HttpPost("{id}/attend")]
+        public async Task<IActionResult> UpdateAttendance(Guid id)
+        {
+            return HandleResult(await Mediator.Send(new UpdateAttendance.Command { Id = id }));
         }
     }
 }

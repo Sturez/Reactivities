@@ -1,4 +1,6 @@
 using System;
+using Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -7,6 +9,13 @@ namespace API.Controllers
     [Route("api/buggy")]
     public class BuggyController : BaseApiController
     {
+        private readonly UserManager<AppUser> _userManager;
+
+        public BuggyController(UserManager<AppUser> userManager)
+        {
+            this._userManager = userManager;
+        }
+
         [HttpGet("not-found")]
         public ActionResult GetNotFound()
         {
