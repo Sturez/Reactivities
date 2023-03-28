@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Infrastructure.Security
@@ -34,7 +35,10 @@ namespace Infrastructure.Security
             RouteValues.SingleOrDefault(x => x.Key == "id").Value?.ToString());
 
             // get  activity attendees from database
-            var attendee = _dbContext.ActivityAttendees.FindAsync(userId.Value, activityId).Result;
+            var attendee = _dbContext.ActivityAttendees
+            .AsNoTracking()
+            .SingleOrDefaultAsync(x => x.AppUserId == userId.Value
+                                && x.ActivityId == activityId).Result;
 
             // if attendee is null, then the user has no rights to proceed
             if (attendee == null) return Task.CompletedTask;
