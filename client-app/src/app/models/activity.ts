@@ -1,3 +1,4 @@
+import { Profile } from "./profile";
 
 export interface Activity {
     id: string;
@@ -7,6 +8,9 @@ export interface Activity {
     category: string;
     city: string;
     venue: string;
+    isCancelled?: boolean;
+    hostUsername?: string;
+    attendees?: Profile[];
 }
 
 

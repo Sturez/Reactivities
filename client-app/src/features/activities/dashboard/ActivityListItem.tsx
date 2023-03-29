@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { Item, Button, Segment, Icon } from 'semantic-ui-react';
 import { Activity } from '../../../app/models/activity';
+import ActivityListItemAttendee from './ActivityListItemAttendee';
 
 
 interface Props {
@@ -27,7 +28,7 @@ const ActivityListItem = ({ activity }: Props) => {
                 <span><Icon name='marker' />{activity.venue}</span>
             </Segment>
             <Segment secondary>
-                Attendees goes here
+                <ActivityListItemAttendee attendees={activity.attendees!} />
             </Segment>
             <Segment clearing>
                 <span>
