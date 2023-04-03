@@ -11,6 +11,10 @@ export interface Activity {
     isCancelled?: boolean;
     hostUsername?: string;
     attendees?: Profile[];
+    isGoing?: boolean;
+    isHost?: boolean;
+    host?: Profile;
+    
 }
 
 

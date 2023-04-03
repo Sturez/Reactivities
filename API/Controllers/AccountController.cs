@@ -79,7 +79,7 @@ namespace API.Controllers
             return new UserDto
             {
                 DisplayName = user.DisplayName,
-                Username = user.UserName,
+                UserName = user.UserName,
                 Image = null,
                 Token = _tokenService.CreateToken(user)
             };
